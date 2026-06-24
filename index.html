@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Family Routines">
+<title>Family Routines ✨</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F0F4FF;--white:#FFFFFF;--text:#1A1A2E;--soft:#6B7280;
+  --border:#E5E7EB;--r:18px;--rs:12px;--rl:26px;
+  --sh:0 2px 10px rgba(0,0,0,.07);--sh2:0 4px 20px rgba(0,0,0,.10);
+  --tr:all .18s ease;
+}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent;
+  -webkit-font-smoothing:antialiased;}
+#app{max-width:480px;min-height:100vh;margin:0 auto;position:relative;}
+.screen{display:none;flex-direction:column;min-height:100vh;background:var(--bg);}
+.screen.active{display:flex;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* HEADER */
+.hdr{padding:52px 18px 12px;display:flex;align-items:center;gap:10px;}
+.hdr-info{flex:1;}
+.hdr-info h1{font-size:22px;font-weight:800;letter-spacing:-.4px;}
+.hdr-info p{font-size:12px;color:var(--soft);margin-top:2px;}
+.ico-btn{width:44px;height:44px;border-radius:50%;background:var(--white);border:none;
+  display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;
+  box-shadow:var(--sh);transition:var(--tr);flex-shrink:0;}
+.ico-btn:active{transform:scale(.92);}
+
+/* CONTENT */
+.cnt{flex:1;padding:6px 16px 32px;overflow-y:auto;}
+
+/* ── HOME ── */
+.hero{background:linear-gradient(135deg,#667eea,#764ba2);border-radius:var(--r);
+  padding:20px;color:#fff;margin-bottom:18px;}
+.hero .dt{font-size:12px;opacity:.8;font-weight:500;}
+.hero .gr{font-size:22px;font-weight:800;margin-top:3px;letter-spacing:-.4px;}
+.hero .sb{display:inline-block;background:rgba(255,255,255,.22);border-radius:20px;
+  padding:4px 13px;font-size:12px;font-weight:600;margin-top:10px;}
+.sec-ttl{font-size:11px;font-weight:700;color:var(--soft);text-transform:uppercase;
+  letter-spacing:.8px;margin-bottom:9px;}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.mcard{border-radius:var(--r);padding:16px 14px;display:flex;flex-direction:column;
+  align-items:flex-start;gap:5px;cursor:pointer;transition:var(--tr);border:none;
+  position:relative;overflow:hidden;min-height:110px;}
+.mcard:active{transform:scale(.96);}
+.mcard .em{font-size:34px;line-height:1;}
+.mcard .nm{font-size:16px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.15);}
+.mcard .pt{font-size:11px;color:rgba(255,255,255,.85);font-weight:500;}
+.mcard .pbar{position:absolute;bottom:0;left:0;height:4px;background:rgba(255,255,255,.4);transition:width .5s ease;}
+.mbadge{position:absolute;top:10px;right:10px;font-size:19px;}
+.par-btn{margin-top:18px;width:100%;padding:15px;border-radius:var(--r);background:var(--white);
+  border:2px dashed var(--border);font-size:15px;font-weight:600;color:var(--soft);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:var(--tr);}
+.par-btn:active{opacity:.7;}
+
+/* ── ROUTINE ── */
+.rminfo{display:flex;align-items:center;gap:12px;padding:12px 18px 16px;}
+.rem{font-size:42px;width:60px;height:60px;border-radius:50%;display:flex;
+  align-items:center;justify-content:center;flex-shrink:0;}
+.rnm{font-size:24px;font-weight:800;letter-spacing:-.4px;}
+.rdt{font-size:12px;color:var(--soft);}
+.prog-wrap{margin:0 18px 14px;background:var(--white);border-radius:var(--r);
+  padding:13px 15px;box-shadow:var(--sh);}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.prog-lbl{font-size:12px;font-weight:600;}
+.prog-pct{font-size:12px;color:var(--soft);}
+.prog-track{height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:4px;transition:width .5s ease;}
+.tabs{display:flex;gap:7px;padding:0 18px 14px;overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:none;cursor:pointer;
+  transition:var(--tr);white-space:nowrap;background:var(--white);color:var(--soft);box-shadow:var(--sh);}
+.tab.on{color:#fff;}
+.tlist{display:flex;flex-direction:column;gap:7px;}
+.ti{background:var(--white);border-radius:var(--rs);padding:13px 15px;display:flex;
+  align-items:center;gap:12px;box-shadow:var(--sh);cursor:pointer;transition:var(--tr);
+  border:2px solid transparent;}
+.ti:active{transform:scale(.99);}
+.ti.done{opacity:.6;}
+.tck{width:26px;height:26px;border-radius:50%;border:2.5px solid var(--border);display:flex;
+  align-items:center;justify-content:center;flex-shrink:0;transition:var(--tr);font-size:13px;}
+.ti.done .tck{border-color:transparent;}
+.tem{font-size:20px;flex-shrink:0;}
+.ttx{flex:1;font-size:14px;font-weight:500;}
+.ti.done .ttx{text-decoration:line-through;}
+/* young child grid */
+.ygrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.yti{background:var(--white);border-radius:var(--r);padding:18px 10px;display:flex;
+  flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:var(--tr);
+  box-shadow:var(--sh);border:3px solid transparent;min-height:110px;}
+.yti:active{transform:scale(.95);}
+.yti.done{border-color:#4CAF50;background:#F1F8E9;}
+.yem{font-size:40px;line-height:1;}
+.ytx{font-size:12px;font-weight:600;text-align:center;}
+/* all done banner */
+.adbanner{border-radius:var(--r);padding:15px 18px;color:#fff;text-align:center;margin-bottom:14px;}
+.adbanner .t{font-size:17px;font-weight:800;}
+.adbanner .s{font-size:12px;opacity:.85;margin-top:3px;}
+/* empty */
+.empty{text-align:center;padding:36px 20px;color:var(--soft);}
+.empty .eico{font-size:44px;margin-bottom:10px;}
+.empty p{font-size:14px;line-height:1.5;}
+/* baby */
+.baby{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:40px 20px;text-align:center;flex:1;}
+.baby .bi{font-size:72px;}
+.baby .bt{font-size:18px;font-weight:700;}
+.baby .bs{font-size:14px;color:var(--soft);line-height:1.6;}
+
+/* ── AUTH ── */
+.auth{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex:1;padding:40px 24px;gap:20px;}
+.auth .ai{font-size:60px;}
+.auth .at{font-size:22px;font-weight:800;}
+.auth .as{font-size:13px;color:var(--soft);text-align:center;}
+.pw-input{width:100%;padding:15px 18px;border-radius:var(--r);border:2px solid var(--border);
+  font-size:17px;text-align:center;outline:none;transition:var(--tr);font-family:inherit;}
+.pw-input:focus{border-color:#667eea;}
+.auth-err{color:#E53E3E;font-size:13px;font-weight:500;}
+.btn-pri{width:100%;padding:15px;border-radius:var(--r);
+  background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-size:15px;
+  font-weight:700;border:none;cursor:pointer;transition:var(--tr);}
+.btn-pri:active{opacity:.9;transform:scale(.99);}
+
+/* ── DASHBOARD ── */
+.dcard{background:var(--white);border-radius:var(--r);padding:14px;margin-bottom:9px;
+  box-shadow:var(--sh);display:flex;align-items:center;gap:11px;cursor:pointer;transition:var(--tr);}
+.dcard:active{transform:scale(.99);}
+.dcard .de{font-size:30px;}
+.dcard .di{flex:1;}
+.dcard .dn{font-size:15px;font-weight:700;}
+.dcard .ds{font-size:12px;color:var(--soft);margin-top:2px;}
+.badge{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;}
+.b-done{background:#E8F5E9;color:#2E7D32;}
+.b-prog{background:#FFF9C4;color:#B45309;}
+.b-nil{background:#F3F4F6;color:#6B7280;}
+.b-ex{background:#EDE9FE;color:#5B21B6;}
+
+/* ── ADMIN ── */
+.asec{background:var(--white);border-radius:var(--r);padding:15px;margin-bottom:11px;box-shadow:var(--sh);}
+.assttl{font-size:11px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.8px;margin-bottom:11px;}
+.tai{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--border);}
+.tai:last-child{border-bottom:none;}
+.taem{font-size:18px;}
+.tatx{flex:1;font-size:13px;font-weight:500;}
+.btn-sm{padding:5px 11px;border-radius:8px;font-size:11px;font-weight:600;border:none;cursor:pointer;transition:var(--tr);}
+.btn-del{background:#FEE2E2;color:#C53030;}
+.btn-del:active{background:#FCA5A5;}
+.atf{display:flex;gap:7px;margin-top:11px;}
+.tinput{padding:9px 13px;border-radius:var(--rs);border:2px solid var(--border);font-size:13px;
+  outline:none;font-family:inherit;transition:var(--tr);}
+.tinput:focus{border-color:#667eea;}
+.btn-add{padding:9px 14px;border-radius:var(--rs);background:#667eea;color:#fff;
+  font-size:13px;font-weight:700;border:none;cursor:pointer;white-space:nowrap;}
+.slotopts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:11px;}
+.sopt{padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  border:2px solid var(--border);background:var(--white);cursor:pointer;color:var(--soft);transition:var(--tr);}
+.sopt.on{background:#667eea;color:#fff;border-color:#667eea;}
+/* toggle */
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;}
+.tog-lbl{font-size:13px;font-weight:600;}
+.tog-sub{font-size:11px;color:var(--soft);margin-top:2px;}
+.tog{width:48px;height:26px;background:var(--border);border-radius:13px;position:relative;
+  cursor:pointer;transition:var(--tr);border:none;flex-shrink:0;}
+.tog.on{background:#4CAF50;}
+.tog::after{content:'';position:absolute;width:20px;height:20px;background:#fff;
+  border-radius:50%;top:3px;left:3px;transition:var(--tr);box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.tog.on::after{left:25px;}
+
+/* ── SETTINGS ── */
+.sitem{display:flex;align-items:center;gap:12px;padding:13px 0;
+  border-bottom:1px solid var(--border);cursor:pointer;}
+.sitem:last-child{border-bottom:none;}
+.sico{width:38px;height:38px;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.sinf{flex:1;}
+.snm{font-size:14px;font-weight:600;}
+.ssb{font-size:11px;color:var(--soft);margin-top:2px;}
+.sarr{color:var(--soft);font-size:17px;}
+
+/* ── DISHES ── */
+.drow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.drow:last-child{border-bottom:none;}
+.dday{font-size:13px;font-weight:700;width:75px;flex-shrink:0;}
+.dperson{flex:1;font-size:13px;color:var(--soft);}
+.dsel{flex:1;padding:6px 10px;border-radius:var(--rs);border:2px solid var(--border);
+  font-size:12px;outline:none;font-family:inherit;}
+
+/* ── CELEBRATION ── */
+.cel-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;
+  flex-direction:column;align-items:center;justify-content:center;z-index:999;animation:fadeIn .25s ease;}
+.cel-card{background:#fff;border-radius:var(--rl);padding:36px 28px;text-align:center;
+  max-width:290px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.cel-em{font-size:60px;}
+.cel-t{font-size:22px;font-weight:800;margin-top:10px;}
+.cel-s{font-size:14px;color:var(--soft);margin-top:7px;line-height:1.5;}
+.confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:998;}
+
+/* ── MODAL ── */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;
+  align-items:flex-end;z-index:500;animation:fadeIn .2s ease;}
+.modal{background:#fff;border-radius:var(--rl) var(--rl) 0 0;padding:22px 18px 38px;
+  width:100%;animation:slideUp .3s cubic-bezier(.32,.72,0,1);}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mhandle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px;}
+.mttl{font-size:19px;font-weight:800;margin-bottom:14px;}
+
+/* ── WALLET PIN ── */
+.pin-dots{display:flex;gap:14px;justify-content:center;margin:22px 0 26px;}
+.pin-dot{width:16px;height:16px;border-radius:50%;background:var(--border);transition:var(--tr);}
+.pin-dot.filled{background:#667eea;}
+.pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:240px;margin:0 auto;}
+.pin-key{width:72px;height:72px;border-radius:50%;background:var(--white);border:none;
+  font-size:24px;font-weight:700;cursor:pointer;box-shadow:var(--sh);transition:var(--tr);
+  display:flex;align-items:center;justify-content:center;}
+.pin-key:active{transform:scale(.9);background:var(--bg);}
+.pin-key.ghost{background:transparent;box-shadow:none;cursor:default;}
+.pin-err{color:#E53E3E;font-size:13px;font-weight:600;height:18px;text-align:center;}
+.pin-link{background:none;border:none;color:var(--soft);font-size:13px;cursor:pointer;padding:8px;}
+/* ── MEMBER FORM ── */
+.emo-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+.col-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+.emo-btn{width:44px;height:44px;border-radius:50%;background:var(--border);border:none;
+  font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--tr);}
+.col-btn{width:38px;height:38px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:var(--tr);}
+.col-btn.sel{border-color:#111;transform:scale(1.15);}
+.emo-btn.sel{background:#667eea;outline:3px solid #667eea;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<canvas class="confetti-canvas" id="confetti" style="display:none"></canvas>
+<script>
+// ═══════════════════════════════════════════════
+//  FAMILY ROUTINES  —  Phase 1
+// ═══════════════════════════════════════════════
+
+// ── DEFAULT DATA ────────────────────────────────
+
+const TASK_DEFAULTS = {
+  weekday:{
+    morning:[
+      {id:'wdm1',text:'Brush teeth (morning)',emoji:'🦷'},
+      {id:'wdm3',text:'Get dressed',emoji:'👕'},
+      {id:'wdm4',text:'Eat breakfast',emoji:'🍳'},
+      {id:'wdm10',text:'Put away dishes',emoji:'🥣'},
+      {id:'wdm11',text:'Put away worn clothes',emoji:'👚'},
+      {id:'wdm5',text:'Make bento',emoji:'🍱'},
+      {id:'wdm6',text:'Pack school bag',emoji:'🎒'},
+    ],
+    evening:[
+      {id:'wde1',text:'Shower',emoji:'🚿'},
+      {id:'wde2',text:'Brush teeth (night)',emoji:'🦷'},
+      {id:'wde3',text:'Toilet',emoji:'🚽'},
+      {id:'wde11',text:'Put away dishes',emoji:'🥣'},
+      {id:'wde13',text:'Put away worn clothes',emoji:'👚'},
+      {id:'wde7',text:'Put away laundry',emoji:'👗'},
+      {id:'wde8',text:'Tidy room',emoji:'🧹'},
+      {id:'wde12',text:'Study 20 min',emoji:'📖'},
+      {id:'wde9',text:'Put out bento & bottle',emoji:'🍱'},
+      {id:'wde4',text:'Prepare for tomorrow',emoji:'📚'},
+      {id:'wde6',text:'Bedtime 9:30',emoji:'🛌'},
+    ]
+  },
+  weekend:{
+    morning:[
+      {id:'wem1',text:'Brush teeth (morning)',emoji:'🦷'},
+      {id:'wem3',text:'Get dressed',emoji:'👕'},
+      {id:'wem4',text:'Eat breakfast',emoji:'🍳'},
+      {id:'wem10',text:'Put away dishes',emoji:'🥣'},
+      {id:'wem11',text:'Put away worn clothes',emoji:'👚'},
+    ],
+    noon:[
+      {id:'wen1',text:'Eat lunch',emoji:'🍽️'},
+      {id:'wen5',text:'Put away dishes',emoji:'🥣'},
+      {id:'wen2',text:'Tidy room',emoji:'🧹'},
+      {id:'wen3',text:'Put away laundry',emoji:'👗'},
+      {id:'wen4',text:'Study / Homework',emoji:'📖'},
+    ],
+    evening:[
+      {id:'wev1',text:'Shower',emoji:'🚿'},
+      {id:'wev2',text:'Brush teeth (night)',emoji:'🦷'},
+      {id:'wev3',text:'Toilet',emoji:'🚽'},
+      {id:'wev7',text:'Put away dishes',emoji:'🥣'},
+      {id:'wev9',text:'Put away worn clothes',emoji:'👚'},
+      {id:'wev4',text:'Tidy room',emoji:'🧹'},
+      {id:'wev8',text:'Study 20 min',emoji:'📖'},
+      {id:'wev6',text:'Bedtime 9:30',emoji:'🛌'},
+    ]
+  }
+};
+
+const YOUNG_DEFAULTS = {
+  weekday:{
+    morning:[
+      {id:'ym1',text:'Brush teeth',emoji:'🦷'},
+      {id:'ym2',text:'Get dressed',emoji:'👕'},
+      {id:'ym3',text:'Eat breakfast',emoji:'🍳'},
+      {id:'ym4',text:'Put away dishes',emoji:'🥣'},
+      {id:'ym5',text:'Put away worn clothes',emoji:'👚'},
+    ],
+    evening:[
+      {id:'ye1',text:'Bath time',emoji:'🛁'},
+      {id:'ye2',text:'Brush teeth',emoji:'🦷'},
+      {id:'ye3',text:'Toilet',emoji:'🚽'},
+      {id:'ye5',text:'Put away dishes',emoji:'🥣'},
+      {id:'ye6',text:'Put away worn clothes',emoji:'👚'},
+      {id:'ye4',text:'Bedtime',emoji:'🛌'},
+    ]
+  },
+  weekend:{
+    morning:[
+      {id:'ywm1',text:'Brush teeth',emoji:'🦷'},
+      {id:'ywm2',text:'Get dressed',emoji:'👕'},
+      {id:'ywm3',text:'Eat breakfast',emoji:'🍳'},
+      {id:'ywm4',text:'Put away dishes',emoji:'🥣'},
+      {id:'ywm5',text:'Put away worn clothes',emoji:'👚'},
+    ],
+    noon:[
+      {id:'ywn1',text:'Eat lunch',emoji:'🍽️'},
+      {id:'ywn3',text:'Put away dishes',emoji:'🥣'},
+      {id:'ywn2',text:'Tidy toys',emoji:'🧸'},
+    ],
+    evening:[
+      {id:'ywe1',text:'Bath time',emoji:'🛁'},
+      {id:'ywe2',text:'Brush teeth',emoji:'🦷'},
+      {id:'ywe3',text:'Toilet',emoji:'🚽'},
+      {id:'ywe5',text:'Put away dishes',emoji:'🥣'},
+      {id:'ywe6',text:'Put away worn clothes',emoji:'👚'},
+      {id:'ywe4',text:'Bedtime',emoji:'🛌'},
+    ]
+  }
+};
+
+const EMPTY_TASKS = {
+  weekday:{morning:[],evening:[]},
+  weekend:{morning:[],noon:[],evening:[]}
+};
+
+const INITIAL_MEMBERS = [
+  {id:'zaion', name:'ざいおん', emoji:'🏆',color:'#27AE60',age:9},
+  {id:'reima', name:'れいま', emoji:'🐧',color:'#D35400',age:11},
+  {id:'rafa',  name:'らふぁ',  emoji:'❄️',color:'#C0392B',age:13},
+  {id:'jaira', name:'じゃいら', emoji:'⚽',color:'#2980B9',age:8},
+  {id:'kutan', name:'くーたん',emoji:'🦁',color:'#8E44AD',age:4,isYoung:true},
+  {id:'kiho',  name:'きほ', emoji:'🥰',color:'#E91E8C',age:1,isBaby:true},
+  {id:'mama',  name:'ママ', emoji:'🌟',color:'#E67E22',age:40,isParent:true},
+  {id:'papa',  name:'パパ', emoji:'⭐',color:'#2C3E50',age:40,isParent:true},
+];
+
+const DEFAULT_DISHES = {
+  '1':['rafa'],
+  '2':['reima'],
+  '3':['mama'],
+  '4':['zaion'],
+  '5':['jaira'],
+  '6':['papa','kutan'],
+  '0':['papa'],
+};
+
+// ── STORAGE ──────────────────────────────────────
+
+const DB = {
+  K:'fr_v6', KC:'fr_comp_v6', KE:'fr_exc_v6',
+  get(){const r=localStorage.getItem(this.K);return r?JSON.parse(r):null;},
+  save(d){localStorage.setItem(this.K,JSON.stringify(d));},
+  getC(){const r=localStorage.getItem(this.KC);return r?JSON.parse(r):{};},
+  saveC(c){localStorage.setItem(this.KC,JSON.stringify(c));},
+  getE(){const r=localStorage.getItem(this.KE);return r?JSON.parse(r):{};},
+  saveE(e){localStorage.setItem(this.KE,JSON.stringify(e));}
+};
+
+// ── INIT ─────────────────────────────────────────
+
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function uid(){return 't'+Date.now()+Math.random().toString(36).slice(2,6);}
+
+function buildDefault(){
+  const tasks={};
+  INITIAL_MEMBERS.forEach(m=>{
+    tasks[m.id]=m.isBaby?clone(EMPTY_TASKS):m.isYoung?clone(YOUNG_DEFAULTS):
+      (m.isParent?clone(EMPTY_TASKS):clone(TASK_DEFAULTS));
+  });
+  // Charge device: only for れいま and ざいおん (school tablets)
+  ['reima','zaion'].forEach(mid=>{
+    if(tasks[mid]){
+      tasks[mid].weekday.evening.push({id:'charge_wd_'+mid,text:'Charge device',emoji:'🔌'});
+      tasks[mid].weekend.evening.push({id:'charge_we_'+mid,text:'Charge device',emoji:'🔌'});
+    }
+  });
+  return {members:INITIAL_MEMBERS,tasks,dishes:clone(DEFAULT_DISHES),settings:{pw:'family2024',walletPins:{}}};
+}
+
+let D; // app data
+function loadData(){
+  D=DB.get();
+  if(!D){D=buildDefault();DB.save(D);}
+  // ensure all members have task entries
+  D.members.forEach(m=>{
+    if(!D.tasks[m.id]){
+      D.tasks[m.id]=m.isBaby?clone(EMPTY_TASKS):m.isYoung?clone(YOUNG_DEFAULTS):
+        (m.isParent?clone(EMPTY_TASKS):clone(TASK_DEFAULTS));
+    }
+  });
+  if(!D.dishes)D.dishes=clone(DEFAULT_DISHES);
+  if(!D.settings)D.settings={pw:'family2024',walletPins:{}};
+  if(!D.settings.walletPins)D.settings.walletPins={};
+  // ── MIGRATE: update emojis & order ──
+  const _emoMap={rafa:'❄️',reima:'🐧',zaion:'🏆',jaira:'⚽',kutan:'🦁',kiho:'🥰'};
+  const _orderMap={zaion:0,reima:1,rafa:2,jaira:3,kutan:4,kiho:5,mama:6,papa:7};
+  let _changed=false;
+  D.members.forEach(m=>{if(_emoMap[m.id]&&m.emoji!==_emoMap[m.id]){m.emoji=_emoMap[m.id];_changed=true;}});
+  D.members.sort((a,b)=>((_orderMap[a.id]??99)-(_orderMap[b.id]??99)));
+  if(_changed)DB.save(D);
+}
+
+// ── HELPERS ──────────────────────────────────────
+
+function today(){return new Date().toISOString().slice(0,10);}
+function dayType(){const d=new Date().getDay();return(d===0||d===6)?'weekend':'weekday';}
+function dow(){return String(new Date().getDay());}
+function curSlot(){const h=new Date().getHours();return h<12?'morning':h<17?'noon':'evening';}
+function fmtDate(d){
+  const ds=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${ds[d.getDay()]}, ${ms[d.getMonth()]} ${d.getDate()}`;
+}
+function slotLabel(s){return{morning:'🌅 Morning',noon:'☀️ Noon',evening:'🌙 Evening'}[s]||s;}
+
+function memberTasks(mid,dt,slot){
+  const m=D.members.find(x=>x.id===mid);
+  if(!m||!D.tasks[mid])return[];
+  const base=clone((D.tasks[mid][dt]||{})[slot]||[]);
+  // auto-add dishes duty in evening
+  if(slot==='evening'){
+    const assigned=(D.dishes[dow()]||[]);
+    if(assigned.includes(mid)&&!base.some(t=>t.isDishes)){
+      base.push({id:'dishes_'+dow(),text:'Wash dishes',emoji:'🍽️',isDishes:true});
+    }
+  }
+  return base;
+}
+
+function getComp(mid,slot){
+  const c=DB.getC();const t=today();
+  return((c[t]||{})[mid]||{})[slot]||[];
+}
+
+function toggleComp(mid,slot,tid){
+  const c=DB.getC();const t=today();
+  if(!c[t])c[t]={};
+  if(!c[t][mid])c[t][mid]={};
+  if(!c[t][mid][slot])c[t][mid][slot]=[];
+  const a=c[t][mid][slot],i=a.indexOf(tid);
+  i>=0?a.splice(i,1):a.push(tid);
+  DB.saveC(c);
+  return a.includes(tid);
+}
+
+function todayProg(mid){
+  const dt=dayType();
+  const slots=dt==='weekday'?['morning','evening']:['morning','noon','evening'];
+  let total=0,done=0;
+  slots.forEach(s=>{
+    const tasks=memberTasks(mid,dt,s);
+    total+=tasks.length;
+    done+=getComp(mid,s).length;
+  });
+  return{total,done,pct:total>0?Math.round(done/total*100):0};
+}
+
+function isExcused(mid){
+  const e=DB.getE();return((e[today()])||[]).includes(mid);
+}
+
+function toggleExcused(mid){
+  const e=DB.getE();const t=today();
+  if(!e[t])e[t]=[];
+  const i=e[t].indexOf(mid);i>=0?e[t].splice(i,1):e[t].push(mid);
+  DB.saveE(e);
+}
+
+// ── STATE ─────────────────────────────────────────
+
+let S={
+  screen:'home',
+  mid:null,
+  slot:'morning',
+  authed:false,
+  adminMid:null,
+  adminSlot:'weekday_morning',
+  walletCur:'aud',
+  walletLockFor:null,
+  walletChildMode:false,
+};
+let pinBuf='';
+let pinError='';
+
+// ═══════════════════════════════════════════════
+//  PHASE 2 — ALLOWANCE SYSTEM
+// ═══════════════════════════════════════════════
+
+const DB_A={
+  KA:'fr_allow_v1',KS:'fr_streak_v1',
+  get(){const r=localStorage.getItem(this.KA);return r?JSON.parse(r):{};},
+  save(d){localStorage.setItem(this.KA,JSON.stringify(d));},
+  getS(){const r=localStorage.getItem(this.KS);return r?JSON.parse(r):{};},
+  saveS(s){localStorage.setItem(this.KS,JSON.stringify(s));}
+};
+
+function ewallet(){return{balance:0,debt:0,debtRatio:0.5,transactions:[],goal:null};}
+
+function addTx(mid,currency,type,amount,note){
+  const a=DB_A.get();
+  if(!a[mid])a[mid]={aud:ewallet(),jpy:ewallet()};
+  if(!a[mid][currency])a[mid][currency]=ewallet();
+  const w=a[mid][currency];
+  const isIn=amount>0;
+  let amt=amount;
+  if(isIn&&w.debt>0){
+    const rep=Math.min(w.debt,amount*w.debtRatio);
+    w.debt=Math.max(0,w.debt-rep);
+    w.transactions.unshift({id:uid(),date:today(),type:'debt_repay',amount:-rep,note:`Debt repay (${(w.debtRatio*100).toFixed(0)}%)`});
+    amt=amount-rep;
+  }
+  w.balance+=amt;
+  if(w.balance<0){w.debt+=Math.abs(w.balance);w.balance=0;}
+  w.transactions.unshift({id:uid(),date:today(),type,amount:amt,note:note||''});
+  DB_A.save(a);
+  if(isIn&&w.goal&&w.balance>=w.goal.amount)return'goal_reached';
+  return null;
+}
+
+function fmtAmt(amount,currency){
+  const abs=Math.abs(amount);
+  return currency==='aud'?`$${abs.toFixed(2)}`:`¥${Math.round(abs).toLocaleString()}`;
+}
+
+function txLabel(type){
+  return{deposit:'💰 Deposit',withdrawal:'💸 Withdrawal',penalty:'⚠️ Penalty',
+    interest:'📈 5% Interest',streak_bonus:'🔥 Streak Bonus',event_bonus:'🏆 Event Bonus',
+    jp_bonus:'🎌 Japanese Level',debt_repay:'📉 Debt Repay',debt:'🔴 Debt Added'}[type]||type;
+}
+
+function getWeekKey(d){
+  const date=d||new Date();
+  const y=date.getFullYear();
+  const start=new Date(y,0,1);
+  const wk=Math.ceil((((date-start)/86400000)+start.getDay()+1)/7);
+  return`${y}-W${String(wk).padStart(2,'0')}`;
+}
+
+function prevWeekKey(wk){
+  const[y,w]=wk.split('-W').map(Number);
+  if(w===1)return`${y-1}-W52`;
+  return`${y}-W${String(w-1).padStart(2,'0')}`;
+}
+
+function streakBonus(n){return n<=1?0.50:n-1;}
+
+function getStreak(mid){
+  const s=DB_A.getS();
+  if(!s[mid])s[mid]={count:0,lastConfirmedWeek:null};
+  return s[mid];
+}
+
+function confirmWeek(mid){
+  const s=DB_A.getS();
+  if(!s[mid])s[mid]={count:0,lastConfirmedWeek:null};
+  const wk=getWeekKey();
+  const st=s[mid];
+  const newCount=st.lastConfirmedWeek===prevWeekKey(wk)||st.lastConfirmedWeek===wk?
+    (st.lastConfirmedWeek===wk?st.count:st.count+1):1;
+  st.count=newCount;st.lastConfirmedWeek=wk;
+  DB_A.saveS(s);
+  const bonus=streakBonus(newCount);
+  addTx(mid,'aud','streak_bonus',bonus,`Week ${newCount} streak`);
+  return{count:newCount,bonus};
+}
+
+function thisWeekDays(mid){
+  const now=new Date(),dow=now.getDay();
+  const mon=new Date(now);
+  mon.setDate(now.getDate()-(dow===0?6:dow-1));mon.setHours(0,0,0,0);
+  const result=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(mon);d.setDate(mon.getDate()+i);
+    const ds=d.toISOString().slice(0,10);
+    const dayLbl=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+    if(d>now){result.push({day:dayLbl,status:'future'});continue;}
+    const isWe=d.getDay()===0||d.getDay()===6;
+    const dt=isWe?'weekend':'weekday';
+    const slots=isWe?['morning','noon','evening']:['morning','evening'];
+    const comps=DB.getC();
+    const dc=((comps[ds]||{})[mid])||{};
+    const exc=((DB.getE()[ds])||[]).includes(mid);
+    if(exc){result.push({day:dayLbl,status:'excused'});continue;}
+    let ok=true;
+    for(const sl of slots){
+      const tasks=memberTasks(mid,dt,sl);
+      if(tasks.length>0&&(dc[sl]||[]).length<tasks.length){ok=false;break;}
+    }
+    result.push({day:dayLbl,status:ok?'done':'miss'});
+  }
+  return result;
+}
+
+function isWeekConfirmable(mid){
+  const days=thisWeekDays(mid);
+  const st=getStreak(mid);
+  if(st.lastConfirmedWeek===getWeekKey())return false;
+  return days.filter(d=>d.status!=='future').every(d=>d.status==='done'||d.status==='excused');
+}
+
+// ── RENDER ────────────────────────────────────────
+
+function go(screen,p={}){
+  Object.assign(S,{screen},p);
+  render();
+}
+
+function render(){
+  document.getElementById('app').innerHTML=screens[S.screen]();
+}
+
+const screens={
+  home(){
+    const dt=dayType(),sl=curSlot(),now=new Date();
+    const cards=D.members.map(m=>{
+      const prog=todayProg(m.id);
+      const exc=isExcused(m.id);
+      const done=prog.total>0&&prog.done===prog.total;
+      const bw=prog.total>0?Math.round(prog.done/prog.total*100):0;
+      let badge=exc?'🏖️':done&&prog.total>0?'✅':'';
+      return`<button class="mcard" style="background:linear-gradient(135deg,${m.color}ee,${m.color}99)"
+        data-a="open" data-m="${m.id}">
+        <span class="em">${m.emoji}</span>
+        <span class="nm">${m.name}</span>
+        <span class="pt">${exc?'Excused':prog.total>0?`${prog.done}/${prog.total} done`:'No tasks yet'}</span>
+        ${badge?`<span class="mbadge">${badge}</span>`:''}
+        <div class="pbar" style="width:${bw}%"></div>
+      </button>`;
+    }).join('');
+    return`<div class="screen active">
+      <div style="padding:52px 18px 10px">
+        <div class="hero">
+          <div class="dt">${fmtDate(now)}</div>
+          <div class="gr">Good ${sl==='morning'?'morning':sl==='noon'?'afternoon':'evening'}! 👋</div>
+          <div class="sb">Now: ${slotLabel(sl)}</div>
+        </div>
+        <div class="sec-ttl">Family Members</div>
+      </div>
+      <div class="cnt" style="padding-top:0">
+        <div class="mgrid">${cards}</div>
+        <button class="par-btn" data-a="parent">🔒 Parent Area</button>
+      </div>
+    </div>`;
+  },
+
+  routine(){
+    const m=D.members.find(x=>x.id===S.mid);
+    if(!m)return screens.home();
+    if(m.isBaby)return screens.baby();
+    const dt=dayType();
+    const slots=dt==='weekday'?['morning','evening']:['morning','noon','evening'];
+    if(!slots.includes(S.slot))S.slot=slots[0];
+    const tasks=memberTasks(m.id,dt,S.slot);
+    const comp=getComp(m.id,S.slot);
+    const done=comp.length,total=tasks.length;
+    const pct=total>0?Math.round(done/total*100):0;
+    const allDone=total>0&&done===total;
+    const exc=isExcused(m.id);
+
+    const tabs=slots.map(s=>`<button class="tab${s===S.slot?' on':''}"
+      style="${s===S.slot?`background:${m.color}`:''}"
+      data-a="slot" data-s="${s}">${slotLabel(s)}</button>`).join('');
+
+    let thtml;
+    if(m.isYoung){
+      thtml=`<div class="ygrid">${tasks.map(t=>{
+        const d=comp.includes(t.id);
+        return`<div class="yti${d?' done':''}" data-a="check" data-t="${t.id}">
+          <div class="yem">${d?'✅':t.emoji||'📌'}</div>
+          <div class="ytx">${t.text}</div>
+        </div>`;
+      }).join('')}</div>`;
+    }else{
+      thtml=`<div class="tlist">${tasks.map(t=>{
+        const d=comp.includes(t.id);
+        return`<div class="ti${d?' done':''}" data-a="check" data-t="${t.id}"
+          style="${d?`border-color:${m.color}22;background:${m.color}08`:''}">
+          <div class="tck" style="${d?`background:${m.color};border-color:${m.color}`:''}">
+            ${d?'<span style="color:#fff;font-size:12px;font-weight:700">✓</span>':''}
+          </div>
+          <span class="tem">${t.emoji||'📌'}</span>
+          <span class="ttx">${t.text}</span>
+        </div>`;
+      }).join('')}</div>`;
+    }
+    if(tasks.length===0)thtml=`<div class="empty"><div class="eico">📋</div><p>No tasks for this slot.<br>Ask a parent to add some!</p></div>`;
+
+    return`<div class="screen active">
+      <div style="padding:52px 18px 0;display:flex;align-items:center;gap:10px">
+        <button class="ico-btn" data-a="back">←</button>
+        <div style="flex:1;font-size:11px;color:var(--soft);font-weight:500">${fmtDate(new Date())} · ${dt==='weekday'?'Weekday':'Weekend'}</div>
+        ${exc?'<span style="font-size:22px">🏖️</span>':''}
+        ${!m.isBaby&&!m.isParent?`<button class="ico-btn" data-a="open-wallet" style="background:${m.color}20">💰</button>`:''}
+      </div>
+      <div class="rminfo">
+        <div class="rem" style="background:${m.color}20">${m.emoji}</div>
+        <div>
+          <div class="rnm">${m.name}</div>
+          <div class="rdt">${exc?'Excused today':`${done} of ${total} tasks done`}</div>
+        </div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-row"><span class="prog-lbl">Progress</span><span class="prog-pct">${pct}%</span></div>
+        <div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${m.color}"></div></div>
+      </div>
+      <div class="tabs">${tabs}</div>
+      <div class="cnt">
+        ${allDone?`<div class="adbanner" style="background:linear-gradient(135deg,${m.color}cc,${m.color}88)">
+          <div class="t">🎉 All done!</div><div class="s">Amazing work, ${m.name}!</div></div>`:''}
+        ${thtml}
+      </div>
+    </div>`;
+  },
+
+  baby(){
+    const m=D.members.find(x=>x.id===S.mid)||{emoji:'🌸',name:'Kiho'};
+    return`<div class="screen active">
+      <div style="padding:52px 18px 0;display:flex;align-items:center">
+        <button class="ico-btn" data-a="back">←</button>
+      </div>
+      <div class="baby">
+        <div class="bi">${m.emoji}</div>
+        <div class="bt">${m.name}'s Routines</div>
+        <div class="bs">${m.name}'s daily care is managed by Mama &amp; Papa. 💕<br><br>Tasks will appear here as ${m.name} grows!</div>
+      </div>
+    </div>`;
+  },
+
+  login(){
+    return`<div class="screen active">
+      <div style="padding:52px 18px 0;display:flex;align-items:center">
+        <button class="ico-btn" data-a="back">←</button>
+      </div>
+      <div class="auth">
+        <div class="ai">🔐</div>
+        <div class="at">Parent Area</div>
+        <div class="as">Enter your password to manage routines and settings</div>
+        <input type="password" class="pw-input" id="pw" placeholder="Password" autocomplete="current-password">
+        <div class="auth-err" id="pw-err" style="display:none">Incorrect password. Try again.</div>
+        <button class="btn-pri" data-a="login">Enter →</button>
+      </div>
+    </div>`;
+  },
+
+  dashboard(){
+    const dt=dayType();
+    const cards=D.members.map(m=>{
+      const prog=todayProg(m.id);
+      const exc=isExcused(m.id);
+      let cls='b-nil',lbl='No tasks';
+      if(exc){cls='b-ex';lbl='🏖️ Excused';}
+      else if(prog.total===0){lbl='No tasks';}
+      else if(prog.done===prog.total){cls='b-done';lbl='✅ All done!';}
+      else if(prog.done>0){cls='b-prog';lbl=`${prog.done}/${prog.total} done`;}
+      else{lbl=`0/${prog.total} done`;}
+      return`<div class="dcard" data-a="adminm" data-m="${m.id}">
+        <div class="de">${m.emoji}</div>
+        <div class="di">
+          <div class="dn">${m.name}</div>
+          <div class="ds">${m.age} years old · ${dt==='weekday'?'Weekday':'Weekend'}</div>
+        </div>
+        <span class="badge ${cls}">${lbl}</span>
+      </div>`;
+    }).join('');
+    return`<div class="screen active">
+      <div class="hdr">
+        <button class="ico-btn" data-a="back">←</button>
+        <div class="hdr-info"><h1>Parent Dashboard</h1><p>${fmtDate(new Date())}</p></div>
+        <button class="ico-btn" data-a="settings">⚙️</button>
+      </div>
+      <div class="cnt">
+        <div class="sec-ttl">Today's Overview</div>
+        ${cards}
+      </div>
+    </div>`;
+  },
+
+  adminmember(){
+    const m=D.members.find(x=>x.id===S.adminMid);
+    if(!m)return screens.dashboard();
+    const [adt,asl]=S.adminSlot.split('_');
+    const tasks=((D.tasks[m.id]||{})[adt]||{})[asl]||[];
+    const exc=isExcused(m.id);
+
+    const slotBtns=[
+      ['weekday_morning','📅 Weekday Morning'],
+      ['weekday_evening','📅 Weekday Evening'],
+      ['weekend_morning','🏖️ Weekend Morning'],
+      ['weekend_noon','🏖️ Weekend Noon'],
+      ['weekend_evening','🏖️ Weekend Evening'],
+    ].map(([k,l])=>`<button class="sopt${S.adminSlot===k?' on':''}" data-a="aslot" data-s="${k}">${l}</button>`).join('');
+
+    const taskItems=tasks.map((t,i)=>`<div class="tai">
+      <span class="taem">${t.emoji||'📌'}</span>
+      <span class="tatx">${t.text}</span>
+      <button class="btn-sm btn-del" data-a="deltask" data-i="${i}">Delete</button>
+    </div>`).join('');
+
+    return`<div class="screen active">
+      <div class="hdr">
+        <button class="ico-btn" data-a="todash">←</button>
+        <div class="hdr-info"><h1>${m.emoji} ${m.name}</h1><p>Task Management</p></div>
+        ${!m.isBaby?`<button class="ico-btn" data-a="open-admin-wallet" style="font-size:18px">💰</button>`:''}
+      </div>
+      <div class="cnt">
+        <div class="asec">
+          <div class="assttl">Today's Status</div>
+          <div class="tog-row">
+            <div><div class="tog-lbl">Excused today</div><div class="tog-sub">Skip excuse (travel, illness, etc.)</div></div>
+            <button class="tog${exc?' on':''}" data-a="excused"></button>
+          </div>
+        </div>
+        ${!m.isBaby&&!m.isParent?`<div class="asec">
+          <div class="assttl">Wallet PIN</div>
+          <div class="tog-row">
+            <div><div class="tog-lbl">6-Digit PIN</div><div class="tog-sub">${D.settings.walletPins&&D.settings.walletPins[m.id]?'PIN set ✓':'No PIN set yet'}</div></div>
+            <button class="btn-sm" style="background:#EBF8FF;color:#2B6CB0" data-a="set-wallet-pin">🔑 ${D.settings.walletPins&&D.settings.walletPins[m.id]?'Change':'Set PIN'}</button>
+          </div>
+        </div>`:''}
+        <div class="asec">
+          <div class="assttl">Tasks</div>
+          <div class="slotopts">${slotBtns}</div>
+          ${tasks.length>0?taskItems:`<p style="font-size:13px;color:var(--soft);text-align:center;padding:14px 0">No tasks for this slot</p>`}
+          <div class="atf">
+            <input type="text" class="tinput" id="ntxt" placeholder="Task name…" style="flex:1">
+            <input type="text" class="tinput" id="nemo" placeholder="🎯" style="width:50px;text-align:center;flex:none">
+            <button class="btn-add" data-a="addtask">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  settings(){
+    return`<div class="screen active">
+      <div class="hdr">
+        <button class="ico-btn" data-a="todash">←</button>
+        <div class="hdr-info"><h1>Settings</h1></div>
+      </div>
+      <div class="cnt">
+        <div class="asec">
+          <div class="assttl">Manage</div>
+          <div class="sitem" data-a="dishes">
+            <div class="sico" style="background:#FFF3E0">🍽️</div>
+            <div class="sinf"><div class="snm">Dishes Rotation</div><div class="ssb">Edit daily dish duty</div></div>
+            <span class="sarr">›</span>
+          </div>
+          <div class="sitem" data-a="addmember">
+            <div class="sico" style="background:#E8F5E9">👤</div>
+            <div class="sinf"><div class="snm">Add Family Member</div><div class="ssb">Add a new person</div></div>
+            <span class="sarr">›</span>
+          </div>
+          <div class="sitem" data-a="chpw">
+            <div class="sico" style="background:#E3F2FD">🔑</div>
+            <div class="sinf"><div class="snm">Change Password</div><div class="ssb">Update parent area password</div></div>
+            <span class="sarr">›</span>
+          </div>
+        </div>
+        <div class="asec">
+          <div class="assttl">Install App</div>
+          <p style="font-size:13px;color:var(--soft);line-height:1.6">
+            To install on iPhone/iPad: tap <strong>Share</strong> → <strong>Add to Home Screen</strong><br>
+            To install on Android: tap menu → <strong>Add to Home Screen</strong>
+          </p>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  dishes(){
+    const days=[['0','Sunday'],['1','Monday'],['2','Tuesday'],['3','Wednesday'],
+      ['4','Thursday'],['5','Friday'],['6','Saturday']];
+    const memOpts=D.members.map(m=>`<option value="${m.id}">${m.emoji} ${m.name}</option>`).join('');
+    const rows=days.map(([d,label])=>{
+      const assigned=D.dishes[d]||[];
+      const opts=D.members.map(m=>`<option value="${m.id}"${assigned.includes(m.id)?' selected':''}>${m.emoji} ${m.name}</option>`).join('');
+      return`<div class="drow">
+        <div class="dday">${label}</div>
+        <select class="dsel" data-a="dchange" data-d="${d}" multiple size="1" style="height:32px"
+          onmousedown="this.size=6" onblur="this.size=1" onchange="this.size=1">${opts}</select>
+        <div class="dperson" id="dp${d}">${assigned.map(id=>{const mem=D.members.find(x=>x.id===id);return mem?mem.name:'?';}).join(' + ')}</div>
+      </div>`;
+    }).join('');
+    return`<div class="screen active">
+      <div class="hdr">
+        <button class="ico-btn" data-a="tosettings">←</button>
+        <div class="hdr-info"><h1>Dishes Rotation</h1><p>Who washes dishes each day</p></div>
+      </div>
+      <div class="cnt">
+        <div class="asec">
+          <div class="assttl">Weekly Schedule</div>
+          ${rows}
+          <p style="font-size:11px;color:var(--soft);margin-top:10px">Tap a day's list and hold Ctrl/Cmd to select multiple</p>
+        </div>
+        <button class="btn-pri" data-a="savedishes">Save Changes ✓</button>
+      </div>
+    </div>`;
+  },
+
+  wallet(){
+    const m=D.members.find(x=>x.id===S.mid);
+    if(!m)return screens.home();
+    const cur=S.walletCur||'aud';
+    const a=DB_A.get();
+    if(!a[m.id])a[m.id]={aud:ewallet(),jpy:ewallet()};
+    const wA=a[m.id].aud||ewallet(),wJ=a[m.id].jpy||ewallet();
+    const st=getStreak(m.id);
+    const w=cur==='aud'?wA:wJ;
+    const txs=w.transactions||[];
+    const goal=wA.goal;
+    const gPct=goal?Math.min(100,Math.round(wA.balance/goal.amount*100)):0;
+    const txHtml=txs.length>0?txs.slice(0,40).map(tx=>{
+      const pos=tx.amount>=0;
+      return`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">${txLabel(tx.type)}</div>
+          <div style="font-size:11px;color:var(--soft)">${tx.date}${tx.note?' · '+tx.note:''}</div>
+        </div>
+        <div style="font-size:15px;font-weight:700;color:${pos?'#2E7D32':'#C53030'}">${pos?'+':''}${fmtAmt(tx.amount,cur)}</div>
+      </div>`;
+    }).join(''):`<p style="text-align:center;color:var(--soft);font-size:13px;padding:20px 0">No transactions yet</p>`;
+    return`<div class="screen active">
+      <div style="padding:52px 18px 0;display:flex;align-items:center;gap:10px">
+        <button class="ico-btn" data-a="back-routine">←</button>
+        <div style="flex:1;font-size:17px;font-weight:800">${m.emoji} ${m.name}'s Wallet</div>
+      </div>
+      <div class="cnt">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div style="background:linear-gradient(135deg,${m.color}ee,${m.color}99);border-radius:var(--r);padding:16px;color:#fff">
+            <div style="font-size:11px;opacity:.8;font-weight:600">AUD</div>
+            <div style="font-size:26px;font-weight:800;margin-top:3px">$${wA.balance.toFixed(2)}</div>
+            ${wA.debt>0?`<div style="font-size:11px;opacity:.85;margin-top:3px">Debt: $${wA.debt.toFixed(2)}</div>`:''}
+          </div>
+          <div style="background:linear-gradient(135deg,#E91E63ee,#E91E63aa);border-radius:var(--r);padding:16px;color:#fff">
+            <div style="font-size:11px;opacity:.8;font-weight:600">JPY</div>
+            <div style="font-size:26px;font-weight:800;margin-top:3px">¥${Math.round(wJ.balance).toLocaleString()}</div>
+            ${wJ.debt>0?`<div style="font-size:11px;opacity:.85;margin-top:3px">Debt: ¥${Math.round(wJ.debt)}</div>`:''}
+          </div>
+        </div>
+        ${st.count>0?`<div style="background:linear-gradient(135deg,#FF9800,#F44336);border-radius:var(--r);padding:14px 16px;color:#fff;margin-bottom:12px">
+          <div style="font-size:14px;font-weight:700">🔥 ${st.count} Week${st.count>1?'s':''} in a Row!</div>
+          <div style="font-size:12px;opacity:.85;margin-top:3px">Next bonus: $${streakBonus(st.count+1).toFixed(2)} AUD</div>
+        </div>`:''}
+        ${goal?`<div class="asec" style="margin-bottom:12px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px">🎯 Saving for: ${goal.description}</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--soft);margin-bottom:5px">
+            <span>$${wA.balance.toFixed(2)}</span><span>$${goal.amount.toFixed(2)}</span>
+          </div>
+          <div class="prog-track"><div class="prog-fill" style="width:${gPct}%;background:${m.color}"></div></div>
+          <div style="font-size:12px;color:var(--soft);margin-top:5px">${gPct}% · $${Math.max(0,goal.amount-wA.balance).toFixed(2)} to go!</div>
+        </div>`:''}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <button class="btn-pri" style="font-size:13px;padding:11px;background:linear-gradient(135deg,#E53E3E,#C53030)" data-a="child-withdraw">💸 引き出す</button>
+          <button class="btn-pri" style="font-size:13px;padding:11px;background:linear-gradient(135deg,#43A047,#2E7D32)" data-a="child-deposit">➕ 追加する</button>
+        </div>
+        <div class="asec">
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <button class="sopt${cur==='aud'?' on':''}" data-a="wlt-cur" data-c="aud">AUD</button>
+            <button class="sopt${cur==='jpy'?' on':''}" data-a="wlt-cur" data-c="jpy">JPY</button>
+          </div>
+          ${txHtml}
+        </div>
+      </div>
+    </div>`;
+  },
+
+  adminWallet(){
+    const m=D.members.find(x=>x.id===S.adminMid);
+    if(!m)return screens.dashboard();
+    const a=DB_A.get();
+    if(!a[m.id])a[m.id]={aud:ewallet(),jpy:ewallet()};
+    const wA=a[m.id].aud||ewallet(),wJ=a[m.id].jpy||ewallet();
+    const st=getStreak(m.id);
+    const wkDays=thisWeekDays(m.id);
+    const canConf=isWeekConfirmable(m.id);
+    const alreadyConf=st.lastConfirmedWeek===getWeekKey();
+    const dots=wkDays.map(d=>{
+      const ic={done:'✅',miss:'❌',future:'⬜',excused:'🏖️'}[d.status];
+      return`<div style="text-align:center"><div style="font-size:14px">${ic}</div><div style="font-size:10px;color:var(--soft)">${d.day}</div></div>`;
+    }).join('');
+    return`<div class="screen active">
+      <div class="hdr">
+        <button class="ico-btn" data-a="back-admin-m">←</button>
+        <div class="hdr-info"><h1>${m.emoji} ${m.name} - Money</h1></div>
+      </div>
+      <div class="cnt">
+        <div class="asec">
+          <div class="assttl">Balances</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="background:var(--bg);border-radius:var(--rs);padding:12px;text-align:center">
+              <div style="font-size:11px;color:var(--soft);font-weight:600">AUD</div>
+              <div style="font-size:20px;font-weight:800">$${wA.balance.toFixed(2)}</div>
+              ${wA.debt>0?`<div style="font-size:11px;color:#E53E3E">Debt: $${wA.debt.toFixed(2)}</div>`:''}
+            </div>
+            <div style="background:var(--bg);border-radius:var(--rs);padding:12px;text-align:center">
+              <div style="font-size:11px;color:var(--soft);font-weight:600">JPY</div>
+              <div style="font-size:20px;font-weight:800">¥${Math.round(wJ.balance).toLocaleString()}</div>
+              ${wJ.debt>0?`<div style="font-size:11px;color:#E53E3E">Debt: ¥${Math.round(wJ.debt)}</div>`:''}
+            </div>
+          </div>
+        </div>
+        <div class="asec">
+          <div class="assttl">Add / Remove</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn-pri" style="font-size:13px;padding:11px" data-a="aw-deposit">💰 Add Money</button>
+            <button class="btn-pri" style="font-size:13px;padding:11px;background:linear-gradient(135deg,#E53E3E,#C53030)" data-a="aw-withdraw">💸 Withdraw</button>
+            <button class="btn-pri" style="font-size:13px;padding:11px;background:linear-gradient(135deg,#ED8936,#DD6B20)" data-a="aw-penalty">⚠️ Penalty</button>
+            <button class="btn-pri" style="font-size:13px;padding:11px;background:linear-gradient(135deg,#805AD5,#6B46C1)" data-a="aw-debt">🔴 Add Debt</button>
+          </div>
+        </div>
+        <div class="asec">
+          <div class="assttl">Weekly Streak</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:10px">🔥 Current: ${st.count} week${st.count!==1?'s':''} · Next bonus: $${streakBonus(st.count+1).toFixed(2)}</div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px">${dots}</div>
+          ${alreadyConf?`<div style="text-align:center;font-size:13px;color:#2E7D32;font-weight:600">✅ This week confirmed!</div>`:
+            canConf?`<button class="btn-pri" data-a="aw-confirm">🏆 Confirm Week & Award $${streakBonus(st.count+1).toFixed(2)}</button>`:
+            `<div style="text-align:center;font-size:12px;color:var(--soft)">Complete all tasks this week to unlock</div>`}
+        </div>
+        <div class="asec">
+          <div class="assttl">Special Bonuses</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn-pri" style="font-size:13px;padding:11px;background:linear-gradient(135deg,#F6AD55,#ED8936)" data-a="aw-event">🏆 Event Bonus</button>
+            <button class="btn-pri" style="font-size:13px;padding:11px;background:linear-gradient(135deg,#FC8181,#E53E3E)" data-a="aw-jplevel">🎌 Japanese Level</button>
+          </div>
+        </div>
+        <div class="asec">
+          <div class="assttl">Savings Goal (AUD)</div>
+          ${wA.goal?`<div style="font-size:14px;font-weight:600;margin-bottom:6px">🎯 ${wA.goal.description}</div>
+            <div style="font-size:13px;color:var(--soft);margin-bottom:10px">Target: $${wA.goal.amount.toFixed(2)}</div>
+            <button class="btn-sm btn-del" data-a="aw-clear-goal">Remove Goal</button>`:
+            `<p style="font-size:13px;color:var(--soft);margin-bottom:10px">No goal set</p>
+            <button class="btn-add" style="width:100%;padding:11px;border-radius:var(--rs)" data-a="aw-set-goal">🎯 Set Savings Goal</button>`}
+        </div>
+        ${wA.debt>0||wJ.debt>0?`<div class="asec">
+          <div class="assttl">Debt Management</div>
+          ${wA.debt>0?`<div style="font-size:13px;margin-bottom:6px">AUD Debt: $${wA.debt.toFixed(2)} · Repay: ${(wA.debtRatio*100).toFixed(0)}%/income</div>`:''}
+          ${wJ.debt>0?`<div style="font-size:13px;margin-bottom:6px">JPY Debt: ¥${Math.round(wJ.debt)} · Repay: ${(wJ.debtRatio*100).toFixed(0)}%/income</div>`:''}
+          <div style="display:flex;gap:8px">
+            <button class="btn-sm" style="background:#EBF8FF;color:#2B6CB0" data-a="aw-debt-ratio">Change Ratio</button>
+            <button class="btn-sm btn-del" data-a="aw-clear-debt">Clear Debt</button>
+          </div>
+        </div>`:''}
+        <div class="asec">
+          <div class="assttl">Annual Interest (Dec 31)</div>
+          <p style="font-size:12px;color:var(--soft);margin-bottom:10px">Apply 5% to AUD & JPY balance</p>
+          <button class="btn-add" style="width:100%;padding:10px;border-radius:var(--rs)" data-a="aw-interest">📈 Apply 5% Interest</button>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  walletLock(){
+    const m=D.members.find(x=>x.id===S.walletLockFor);
+    if(!m)return screens.home();
+    const hasPin=!!(D.settings.walletPins&&D.settings.walletPins[m.id]);
+    const dots=Array.from({length:6},(_,i)=>`<div class="pin-dot${i<pinBuf.length?' filled':''}"></div>`).join('');
+    const keys=[1,2,3,4,5,6,7,8,9].map(n=>`<button class="pin-key" data-a="pin-key" data-n="${n}">${n}</button>`).join('');
+    return`<div class="screen active">
+      <div style="padding:52px 18px 0;display:flex;align-items:center">
+        <button class="ico-btn" data-a="back">←</button>
+      </div>
+      <div class="auth" style="gap:10px;padding-top:20px">
+        <div style="font-size:56px;line-height:1">${m.emoji}</div>
+        <div class="at">${m.name}のさいふ</div>
+        ${hasPin?`
+        <div class="as" style="margin-bottom:4px">6けたの番号を入力してね</div>
+        <div class="pin-dots">${dots}</div>
+        <div class="pin-err">${pinError}</div>
+        <div class="pin-grid">
+          ${keys}
+          <button class="pin-key ghost" disabled></button>
+          <button class="pin-key" data-a="pin-key" data-n="0">0</button>
+          <button class="pin-key" data-a="pin-del" style="font-size:20px">⌫</button>
+        </div>
+        `:`<div class="as">PINがまだ設定されていません。<br>ママかパパに設定してもらってね。</div>`}
+        <button class="pin-link" data-a="pin-parent">🔑 Parent password</button>
+      </div>
+    </div>`;
+  },
+
+  addmember(){
+    const emojis=['🦁','🐯','🐻','🦊','🐨','🐸','🦄','🐬','🦋','🌟','⭐','🌈','🎠','🦖','🐙'];
+    const colors=['#C0392B','#D35400','#27AE60','#2980B9','#8E44AD','#E91E8C','#E67E22','#2C3E50','#16A085','#F39C12'];
+    return`<div class="screen active">
+      <div class="hdr">
+        <button class="ico-btn" data-a="tosettings">←</button>
+        <div class="hdr-info"><h1>Add Member</h1></div>
+      </div>
+      <div class="cnt">
+        <div class="asec">
+          <div class="assttl">Name & Age</div>
+          <input type="text" class="tinput" id="mnm" placeholder="Name" style="width:100%;margin-bottom:8px">
+          <input type="number" class="tinput" id="mag" placeholder="Age" style="width:100%">
+        </div>
+        <div class="asec">
+          <div class="assttl">Choose Emoji</div>
+          <div class="emo-grid">${emojis.map(e=>`<button class="emo-btn" data-a="pickemo" data-e="${e}">${e}</button>`).join('')}</div>
+          <div class="assttl">Choose Colour</div>
+          <div class="col-grid">${colors.map(c=>`<button class="col-btn" data-a="pickcol" data-c="${c}" style="background:${c}"></button>`).join('')}</div>
+        </div>
+        <button class="btn-pri" data-a="savemember">Add to Family ✓</button>
+      </div>
+    </div>`;
+  },
+};
+
+// ── EVENT DELEGATION ──────────────────────────────
+
+function handleClick(e){
+  const el=e.target.closest('[data-a]');
+  if(!el)return;
+  const a=el.dataset.a;
+
+  if(a==='open'){
+    S.slot=curSlot();
+    go('routine',{mid:el.dataset.m});
+  }
+  else if(a==='back'){
+    if(S.screen==='walletLock'){pinBuf='';pinError='';go('routine',{mid:S.walletLockFor});}
+    else go('home');
+  }
+  else if(a==='parent'){S.authed?go('dashboard'):go('login');}
+  else if(a==='login'){
+    const pw=document.getElementById('pw');
+    const err=document.getElementById('pw-err');
+    if(pw&&pw.value===D.settings.pw){S.authed=true;go('dashboard');}
+    else{if(err)err.style.display='block';if(pw){pw.value='';pw.focus();}}
+  }
+  else if(a==='slot'){go('routine',{slot:el.dataset.s});}
+  else if(a==='check'){
+    const tid=el.dataset.t;
+    const wasAdded=toggleComp(S.mid,S.slot,tid);
+    const tasks=memberTasks(S.mid,dayType(),S.slot);
+    const comp=getComp(S.mid,S.slot);
+    const allDone=tasks.length>0&&tasks.every(t=>comp.includes(t.id));
+    render();
+    if(allDone&&wasAdded)celebrate(S.mid);
+  }
+  else if(a==='todash'){go('dashboard');}
+  else if(a==='tosettings'){go('settings');}
+  else if(a==='settings'){go('settings');}
+  else if(a==='adminm'){go('adminmember',{adminMid:el.dataset.m,adminSlot:'weekday_morning'});}
+  else if(a==='aslot'){go('adminmember',{adminSlot:el.dataset.s});}
+  else if(a==='addtask'){
+    const txt=document.getElementById('ntxt')?.value.trim();
+    if(!txt)return;
+    const emo=document.getElementById('nemo')?.value.trim()||'📌';
+    const[dt,sl]=S.adminSlot.split('_');
+    if(!D.tasks[S.adminMid])D.tasks[S.adminMid]=clone(TASK_DEFAULTS);
+    if(!D.tasks[S.adminMid][dt])D.tasks[S.adminMid][dt]={};
+    if(!D.tasks[S.adminMid][dt][sl])D.tasks[S.adminMid][dt][sl]=[];
+    D.tasks[S.adminMid][dt][sl].push({id:uid(),text:txt,emoji:emo});
+    DB.save(D);render();
+  }
+  else if(a==='deltask'){
+    const i=parseInt(el.dataset.i);
+    const[dt,sl]=S.adminSlot.split('_');
+    if(D.tasks[S.adminMid]&&D.tasks[S.adminMid][dt]&&D.tasks[S.adminMid][dt][sl]){
+      D.tasks[S.adminMid][dt][sl].splice(i,1);
+      DB.save(D);render();
+    }
+  }
+  else if(a==='excused'){toggleExcused(S.adminMid);render();}
+  // ── WALLET NAVIGATION ──
+  else if(a==='open-wallet'){pinBuf='';pinError='';go('walletLock',{walletLockFor:S.mid,walletChildMode:false});}
+  else if(a==='back-routine'){go('routine');}
+  else if(a==='back-wallet-lock'){go('routine');}
+  else if(a==='wlt-cur'){go('wallet',{walletCur:el.dataset.c});}
+  else if(a==='open-admin-wallet'){go('adminWallet');}
+  else if(a==='back-admin-m'){go('adminmember');}
+  // ── WALLET PIN ──
+  else if(a==='pin-key'){
+    if(pinBuf.length>=6)return;
+    pinBuf+=el.dataset.n;
+    pinError='';
+    render();
+    if(pinBuf.length===6){
+      const pin=D.settings.walletPins&&D.settings.walletPins[S.walletLockFor];
+      if(pinBuf===pin){
+        pinBuf='';pinError='';
+        go('wallet',{mid:S.walletLockFor,walletCur:'aud',walletChildMode:true});
+      }else{
+        pinBuf='';pinError='❌ Wrong PIN. Try again.';
+        render();
+      }
+    }
+  }
+  else if(a==='pin-del'){pinBuf=pinBuf.slice(0,-1);pinError='';render();}
+  else if(a==='pin-parent'){
+    const pw=prompt('Enter parent password:');
+    if(!pw)return;
+    if(pw===D.settings.pw){
+      pinBuf='';pinError='';
+      // Parent gets full access via adminWallet
+      go('adminWallet',{adminMid:S.walletLockFor});
+    }else{alert('Incorrect password.');}
+  }
+  else if(a==='set-wallet-pin'){
+    const m=D.members.find(x=>x.id===S.adminMid);
+    const pin=prompt(`${m?m.name+'の':''}ウォレットPINを設定 (6 digits):`);
+    if(!pin)return;
+    if(!/^\d{6}$/.test(pin)){alert('6桁の数字を入力してください。');return;}
+    D.settings.walletPins[S.adminMid]=pin;
+    DB.save(D);
+    alert(`PIN set for ${m?m.name:'member'} ✓`);
+    render();
+  }
+  else if(a==='child-withdraw'){
+    const cur=S.walletCur||'aud';
+    const amtStr=prompt(`引き出す金額 (${cur.toUpperCase()})?`);
+    if(!amtStr)return;
+    const amt=parseFloat(amtStr);
+    if(isNaN(amt)||amt<=0){alert('Invalid amount');return;}
+    addTx(S.mid,cur,'withdrawal',-amt,'Withdrawal');
+    render();
+  }
+  else if(a==='child-deposit'){
+    const pw=prompt('親のパスワードを入力してください:');
+    if(!pw)return;
+    if(pw!==D.settings.pw){alert('パスワードが違います。');return;}
+    const cur=S.walletCur||'aud';
+    const amtStr=prompt(`追加する金額 (${cur.toUpperCase()})?`);
+    if(!amtStr)return;
+    const amt=parseFloat(amtStr);
+    if(isNaN(amt)||amt<=0){alert('Invalid amount');return;}
+    const note=prompt('メモ (任意):','')||'';
+    const result=addTx(S.mid,cur,'deposit',amt,note);
+    render();
+    if(result==='goal_reached')celebrateGoal(S.mid);
+  }
+  // ── ALLOWANCE ACTIONS ──
+  else if(a==='aw-deposit'){
+    const cur=prompt('Currency? Type: aud  or  jpy','aud');
+    if(!cur)return;
+    const c=cur.toLowerCase().trim();
+    if(c!=='aud'&&c!=='jpy'){alert('Please type aud or jpy');return;}
+    const amtStr=prompt(`Amount (${c.toUpperCase()})?`);
+    if(!amtStr)return;
+    const amt=parseFloat(amtStr);
+    if(isNaN(amt)||amt<=0){alert('Invalid amount');return;}
+    const note=prompt('Note (optional):','')||'';
+    const result=addTx(S.adminMid,c,'deposit',amt,note);
+    render();
+    if(result==='goal_reached')celebrateGoal(S.adminMid);
+  }
+  else if(a==='aw-withdraw'){
+    const cur=prompt('Currency? aud or jpy','aud');
+    if(!cur)return;
+    const c=cur.toLowerCase().trim();
+    if(c!=='aud'&&c!=='jpy'){alert('Please type aud or jpy');return;}
+    const amtStr=prompt(`Amount to withdraw (${c.toUpperCase()})?`);
+    if(!amtStr)return;
+    const amt=parseFloat(amtStr);
+    if(isNaN(amt)||amt<=0){alert('Invalid amount');return;}
+    addTx(S.adminMid,c,'withdrawal',-amt,'Withdrawal');
+    render();
+  }
+  else if(a==='aw-penalty'){
+    const reason=prompt('Reason for penalty?','Bad language');
+    if(!reason)return;
+    const amtStr=prompt('Amount (AUD)?','0.50');
+    const amt=parseFloat(amtStr);
+    if(isNaN(amt)||amt<=0){alert('Invalid amount');return;}
+    addTx(S.adminMid,'aud','penalty',-amt,reason);
+    render();
+    alert(`⚠️ $${amt.toFixed(2)} penalty applied.`);
+  }
+  else if(a==='aw-debt'){
+    const cur=prompt('Currency? aud or jpy','aud');
+    if(!cur)return;
+    const c=cur.toLowerCase().trim();
+    if(c!=='aud'&&c!=='jpy'){alert('Please type aud or jpy');return;}
+    const amtStr=prompt(`Debt amount (${c.toUpperCase()})?`);
+    if(!amtStr)return;
+    const amt=parseFloat(amtStr);
+    if(isNaN(amt)||amt<=0){alert('Invalid amount');return;}
+    const reason=prompt('Reason?','Damage/breakage')||'Debt';
+    const a2=DB_A.get();
+    if(!a2[S.adminMid])a2[S.adminMid]={aud:ewallet(),jpy:ewallet()};
+    a2[S.adminMid][c].debt+=amt;
+    a2[S.adminMid][c].transactions.unshift({id:uid(),date:today(),type:'debt',amount:-amt,note:reason});
+    DB_A.save(a2);
+    render();
+    alert(`🔴 $${amt} debt added. Will be deducted from future income.`);
+  }
+  else if(a==='aw-confirm'){
+    const result=confirmWeek(S.adminMid);
+    render();
+    celebrate(S.adminMid);
+    alert(`🏆 Week ${result.count} confirmed! $${result.bonus.toFixed(2)} AUD bonus added!`);
+  }
+  else if(a==='aw-event'){
+    const cur=prompt('Currency? aud or jpy','aud');
+    if(!cur)return;
+    const c=cur.toLowerCase().trim();
+    if(c!=='aud'&&c!=='jpy'){alert('Please type aud or jpy');return;}
+    const amtStr=prompt(`Bonus amount (${c.toUpperCase()})?`);
+    if(!amtStr)return;
+    const amt=parseFloat(amtStr);
+    if(isNaN(amt)||amt<=0){alert('Invalid amount');return;}
+    const note=prompt('Event? (e.g. Award, Test A, Sports)','Award')||'Event';
+    const result=addTx(S.adminMid,c,'event_bonus',amt,note);
+    render();
+    celebrate(S.adminMid);
+    if(result==='goal_reached')celebrateGoal(S.adminMid);
+  }
+  else if(a==='aw-jplevel'){
+    const amtStr=prompt('Japanese level bonus amount (AUD)?','0.50');
+    if(!amtStr)return;
+    const amt=parseFloat(amtStr);
+    if(isNaN(amt)||amt<=0){alert('Invalid amount');return;}
+    const note=prompt('Achievement?','Hiragana complete')||'Japanese Level';
+    const result=addTx(S.adminMid,'aud','jp_bonus',amt,note);
+    render();
+    celebrate(S.adminMid);
+    if(result==='goal_reached')celebrateGoal(S.adminMid);
+  }
+  else if(a==='aw-set-goal'){
+    const desc=prompt('What are they saving for?');
+    if(!desc)return;
+    const amtStr=prompt('Target amount (AUD)?');
+    if(!amtStr)return;
+    const amt=parseFloat(amtStr);
+    if(isNaN(amt)||amt<=0){alert('Invalid amount');return;}
+    const a2=DB_A.get();
+    if(!a2[S.adminMid])a2[S.adminMid]={aud:ewallet(),jpy:ewallet()};
+    a2[S.adminMid].aud.goal={description:desc,amount:amt};
+    DB_A.save(a2);render();
+  }
+  else if(a==='aw-clear-goal'){
+    if(!confirm('Remove savings goal?'))return;
+    const a2=DB_A.get();
+    if(a2[S.adminMid])a2[S.adminMid].aud.goal=null;
+    DB_A.save(a2);render();
+  }
+  else if(a==='aw-debt-ratio'){
+    const cur=prompt('Which currency? aud or jpy','aud');
+    if(!cur)return;
+    const c=cur.toLowerCase().trim();
+    const ratioStr=prompt('What % of each income goes to debt repayment?\n(e.g. 50 = 50%)','50');
+    if(!ratioStr)return;
+    const ratio=parseFloat(ratioStr)/100;
+    if(isNaN(ratio)||ratio<=0||ratio>1){alert('Enter a number between 1-100');return;}
+    const a2=DB_A.get();
+    if(a2[S.adminMid])a2[S.adminMid][c].debtRatio=ratio;
+    DB_A.save(a2);render();
+  }
+  else if(a==='aw-clear-debt'){
+    if(!confirm('Clear all debt? (only do this if it has been paid off)'))return;
+    const a2=DB_A.get();
+    if(a2[S.adminMid]){a2[S.adminMid].aud.debt=0;a2[S.adminMid].jpy.debt=0;}
+    DB_A.save(a2);render();
+  }
+  else if(a==='aw-interest'){
+    if(!confirm('Apply 5% annual interest to AUD and JPY balances?'))return;
+    const a2=DB_A.get();
+    if(!a2[S.adminMid])a2[S.adminMid]={aud:ewallet(),jpy:ewallet()};
+    const wA=a2[S.adminMid].aud,wJ=a2[S.adminMid].jpy;
+    const intA=wA.balance*0.05,intJ=wJ.balance*0.05;
+    if(intA>0){wA.balance+=intA;wA.transactions.unshift({id:uid(),date:today(),type:'interest',amount:intA,note:'Annual 5% interest'});}
+    if(intJ>0){wJ.balance+=intJ;wJ.transactions.unshift({id:uid(),date:today(),type:'interest',amount:intJ,note:'Annual 5% interest'});}
+    DB_A.save(a2);render();
+    alert(`📈 Interest applied!\nAUD: +$${intA.toFixed(2)}\nJPY: +¥${Math.round(intJ)}`);
+  }
+  else if(a==='dishes'){go('dishes');}
+  else if(a==='addmember'){go('addmember');}
+  else if(a==='chpw'){
+    const np=prompt('Enter new password:');
+    if(np&&np.trim()){D.settings.pw=np.trim();DB.save(D);alert('Password updated ✓');}
+  }
+  else if(a==='savedishes'){
+    document.querySelectorAll('[data-a="dchange"]').forEach(sel=>{
+      const d=sel.dataset.d;
+      D.dishes[d]=Array.from(sel.selectedOptions).map(o=>o.value);
+    });
+    DB.save(D);go('settings');
+  }
+  else if(a==='pickemo'){
+    document.querySelectorAll('.emo-btn').forEach(b=>{b.classList.remove('sel');b.style.background='var(--border)';});
+    el.classList.add('sel');
+  }
+  else if(a==='pickcol'){
+    document.querySelectorAll('.col-btn').forEach(b=>b.classList.remove('sel'));
+    el.classList.add('sel');
+  }
+  else if(a==='savemember'){
+    const nm=document.getElementById('mnm')?.value.trim();
+    const ag=parseInt(document.getElementById('mag')?.value)||0;
+    const emoBtn=document.querySelector('.emo-btn.sel');
+    const colBtn=document.querySelector('.col-btn.sel');
+    if(!nm){alert('Please enter a name.');return;}
+    const newM={
+      id:'m'+Date.now(),name:nm,age:ag,
+      emoji:emoBtn?emoBtn.dataset.e:'⭐',
+      color:colBtn?colBtn.dataset.c:'#667eea',
+      ...(ag<=1?{isBaby:true}:ag>=2&&ag<=5?{isYoung:true}:{}),
+    };
+    D.members.push(newM);
+    D.tasks[newM.id]=newM.isBaby?clone(EMPTY_TASKS):newM.isYoung?clone(YOUNG_DEFAULTS):clone(TASK_DEFAULTS);
+    DB.save(D);go('settings');
+  }
+}
+
+function handleKey(e){
+  if(e.key==='Enter'&&S.screen==='login'){
+    document.querySelector('[data-a="login"]')?.click();
+  }
+  if(S.screen==='walletLock'){
+    if(/^[0-9]$/.test(e.key)){
+      document.querySelector(`[data-a="pin-key"][data-n="${e.key}"]`)?.click();
+    }else if(e.key==='Backspace'){
+      document.querySelector('[data-a="pin-del"]')?.click();
+    }
+  }
+}
+
+function celebrateGoal(mid){
+  const m=D.members.find(x=>x.id===mid)||{emoji:'🎯',name:''};
+  const ov=document.createElement('div');
+  ov.className='cel-ov';
+  ov.innerHTML=`<div class="cel-card">
+    <div class="cel-em">🎯</div>
+    <div class="cel-t">Goal Reached!</div>
+    <div class="cel-s">${m.name} reached their savings goal! ${m.emoji}<br>Time to celebrate! 🎉</div>
+    <button class="btn-pri" style="margin-top:18px" onclick="this.closest('.cel-ov').remove()">Amazing! 🌟</button>
+  </div>`;
+  document.body.appendChild(ov);
+  launchConfetti();
+}
+
+// ── CELEBRATION ───────────────────────────────────
+
+function celebrate(mid){
+  const m=D.members.find(x=>x.id===mid)||{emoji:'🎉',name:''};
+  const ov=document.createElement('div');
+  ov.className='cel-ov';
+  ov.innerHTML=`<div class="cel-card">
+    <div class="cel-em">🎉</div>
+    <div class="cel-t">All Done!</div>
+    <div class="cel-s">Amazing work, ${m.name}! ${m.emoji}<br>You completed all your tasks!</div>
+    <button class="btn-pri" style="margin-top:18px" onclick="this.closest('.cel-ov').remove()">Awesome! 🌟</button>
+  </div>`;
+  document.body.appendChild(ov);
+  launchConfetti();
+}
+
+function launchConfetti(){
+  const cv=document.getElementById('confetti');
+  cv.style.display='block';
+  cv.width=window.innerWidth;
+  cv.height=window.innerHeight;
+  const ctx=cv.getContext('2d');
+  const cols=['#FF6B6B','#4ECDC4','#45B7D1','#FFEAA7','#DDA0DD','#98D8C8','#FFB347','#87CEEB'];
+  const parts=Array.from({length:90},()=>({
+    x:Math.random()*cv.width,y:-20,
+    vx:(Math.random()-.5)*4,vy:Math.random()*3+2,
+    c:cols[Math.floor(Math.random()*cols.length)],
+    sz:Math.random()*7+4,rot:Math.random()*360,rs:(Math.random()-.5)*8,
+  }));
+  let af;
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    let alive=false;
+    parts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.rot+=p.rs;
+      if(p.y<cv.height+20)alive=true;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.c;ctx.fillRect(-p.sz/2,-p.sz/2,p.sz,p.sz);ctx.restore();
+    });
+    if(alive)af=requestAnimationFrame(draw);
+    else{cv.style.display='none';cancelAnimationFrame(af);}
+  }
+  draw();
+  setTimeout(()=>{cv.style.display='none';cancelAnimationFrame(af);},5000);
+}
+
+// ── STARTUP ───────────────────────────────────────
+
+document.addEventListener('click',handleClick);
+document.addEventListener('keydown',handleKey);
+
+// handle dishes multi-select display update
+document.addEventListener('change',e=>{
+  const sel=e.target.closest('[data-a="dchange"]');
+  if(!sel)return;
+  const d=sel.dataset.d;
+  const dp=document.getElementById('dp'+d);
+  if(dp){
+    const names=Array.from(sel.selectedOptions).map(o=>{
+      const m=D.members.find(x=>x.id===o.value);return m?m.name:o.text;
+    });
+    dp.textContent=names.join(' + ')||'—';
+  }
+});
+
+loadData();
+render();
+</script>
+</body>
+</html>
