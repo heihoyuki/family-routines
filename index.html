@@ -619,6 +619,23 @@ function isWeekConfirmable(mid){
   return days.filter(d=>d.status!=='future').every(d=>d.status==='done'||d.status==='excused');
 }
 
+// ── BACKUP / RESTORE ─────────────────────────────
+const BACKUP_KEYS=['fr_v6','fr_comp_v6','fr_exc_v6','fr_allow_v1','fr_streak_v1'];
+
+function exportBackup(){
+  const data={};
+  BACKUP_KEYS.forEach(k=>{const v=localStorage.getItem(k);if(v)data[k]=v;});
+  return JSON.stringify(data);
+}
+
+function importBackup(json){
+  try{
+    const data=JSON.parse(json);
+    BACKUP_KEYS.forEach(k=>{if(data[k])localStorage.setItem(k,data[k]);});
+    return true;
+  }catch(e){return false;}
+}
+
 // ── RENDER ────────────────────────────────────────
 
 function go(screen,p={}){
@@ -648,6 +665,15 @@ const screens={
         <div class="pbar" style="width:${bw}%"></div>
       </button>`;
     }).join('');
+    const isPWA=window.navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches;
+    const pwaWarn=!isPWA?`<div style="background:#FFF3E0;border-radius:var(--rs);padding:11px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;cursor:pointer" data-a="settings">
+      <span style="font-size:20px">⚠️</span>
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:700;color:#E65100">データ消失防止のため</div>
+        <div style="font-size:11px;color:#BF360C">ホーム画面に追加してください → タップで設定</div>
+      </div>
+      <span style="color:#E65100;font-size:16px">›</span>
+    </div>`:'';
     return`<div class="screen active">
       <div style="padding:52px 18px 10px">
         <div class="hero">
@@ -658,6 +684,7 @@ const screens={
         <div class="sec-ttl">Family Members</div>
       </div>
       <div class="cnt" style="padding-top:0">
+        ${pwaWarn}
         <div class="mgrid">${cards}</div>
         <button class="par-btn" data-a="parent">🔒 Parent Area</button>
       </div>
@@ -877,12 +904,20 @@ const screens={
             <span class="sarr">›</span>
           </div>
         </div>
-        <div class="asec">
-          <div class="assttl">Install App</div>
-          <p style="font-size:13px;color:var(--soft);line-height:1.6">
-            To install on iPhone/iPad: tap <strong>Share</strong> → <strong>Add to Home Screen</strong><br>
-            To install on Android: tap menu → <strong>Add to Home Screen</strong>
+        <div class="asec" style="border:2px solid #FF9800">
+          <div class="assttl" style="color:#E65100">⚠️ データ保護</div>
+          <p style="font-size:13px;color:var(--soft);line-height:1.6;margin-bottom:12px">
+            SafariはWebサイトのデータを<strong>7日間未使用で自動削除</strong>します。<br>
+            ホーム画面に追加するとデータが保護されます。
           </p>
+          <div style="background:#FFF3E0;border-radius:var(--rs);padding:12px;font-size:13px;line-height:1.7;margin-bottom:12px">
+            📱 iPhone/iPad：<strong>共有ボタン（□↑）→ ホーム画面に追加</strong><br>
+            🤖 Android：<strong>メニュー → ホーム画面に追加</strong>
+          </div>
+          <div class="assttl" style="margin-top:4px">💾 データバックアップ</div>
+          <p style="font-size:12px;color:var(--soft);margin-bottom:8px">定期的にコピーして安全な場所（メモ帳など）に保存してください</p>
+          <button class="btn-pri" style="font-size:13px;padding:11px;margin-bottom:8px" data-a="backup-export">📋 データをコピー（バックアップ）</button>
+          <button class="btn-pri" style="font-size:13px;padding:11px;background:linear-gradient(135deg,#43A047,#2E7D32)" data-a="backup-import">📥 データを復元（ペースト）</button>
         </div>
       </div>
     </div>`;
@@ -1382,6 +1417,26 @@ function handleClick(e){
     if(intJ>0){wJ.balance+=intJ;wJ.transactions.unshift({id:uid(),date:today(),type:'interest',amount:intJ,note:'Annual 5% interest'});}
     DB_A.save(a2);render();
     alert(`📈 Interest applied!\nAUD: +$${intA.toFixed(2)}\nJPY: +¥${Math.round(intJ)}`);
+  }
+  else if(a==='backup-export'){
+    const json=exportBackup();
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(json).then(()=>{
+        alert('✅ データをコピーしました！\nメモ帳やLINEのメッセージに貼り付けて保存してください。');
+      }).catch(()=>{prompt('以下のテキストを全選択してコピーしてください：',json);});
+    }else{
+      prompt('以下のテキストを全選択してコピーしてください：',json);
+    }
+  }
+  else if(a==='backup-import'){
+    const json=prompt('バックアップデータを貼り付けてください：');
+    if(!json)return;
+    if(importBackup(json)){
+      alert('✅ データを復元しました！アプリを再読み込みします。');
+      loadData();render();
+    }else{
+      alert('❌ データの形式が正しくありません。もう一度確認してください。');
+    }
   }
   else if(a==='dishes'){go('dishes');}
   else if(a==='addmember'){go('addmember');}
